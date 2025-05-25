@@ -1,0 +1,13 @@
+﻿llm\_crossover
+==============
+
+.. automodule:: llm_crossover
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      augment_network
+      write_augmented_code
+   
