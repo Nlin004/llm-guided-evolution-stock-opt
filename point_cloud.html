@@ -248,8 +248,8 @@
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
 <p>How to get started and setup your system for Point Cloud Classification Team</p>
-<p>Dr. Zutty’s recent paper LLM Guided Evolution – The Automation of Models Advancing Models.
-They were able to create a framework that uses LLMs with a layer of creativity to speed up the process of evolving ML models.
+<p>In Morris, Jurado, and Zutty’s recent paper “LLM Guided Evolution – The Automation of Models Advancing Models”,
+they were able to create a framework that uses LLMs with a layer of creativity to speed up the process of evolving ML models.
 Our specific goal is to generalize this framework by improving 2 current state of the start point cloud classification models.
 We picked Point Transformers and PointNet++ along with the Model40Net DataSet.</p>
 </section>
@@ -328,6 +328,46 @@ Click the Upload Button at the top of the window, and drag and drop your IMAGE-G
 <section id="exquisitenetv2">
 <h4>ExquisiteNetV2<a class="headerlink" href="#exquisitenetv2" title="Link to this heading">¶</a></h4>
 <p>Lightweight CNN designed for image classification, tested on 15 datasets (CIFAR-10, MNIST) with 518,230 parameters, achieving 99.71% accuracy on MNIST.</p>
+</section>
+</section>
+<section id="llm-ge-codebase-structure">
+<h3>LLM-GE Codebase Structure<a class="headerlink" href="#llm-ge-codebase-structure" title="Link to this heading">¶</a></h3>
+<img alt="_images/repo-structure.png" src="_images/repo-structure.png" />
+</section>
+<section id="code-breakdown">
+<h3>Code Breakdown<a class="headerlink" href="#code-breakdown" title="Link to this heading">¶</a></h3>
+<p>First Step use the environment.yml file to create the llmge-env environment</p>
+<p>Step 1: <code class="docutils literal notranslate"><span class="pre">nano</span> <span class="pre">environment.yml</span></code></p>
+<p>Step 2: <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">env</span> <span class="pre">create</span> <span class="pre">-f</span> <span class="pre">environment.yml</span></code></p>
+<p>Step 3: <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">activate</span> <span class="pre">llmge-env</span></code></p>
+<p>Step 4: <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">list</span></code>
+- This will list out all of the environment details that we have</p>
+</section>
+<section id="id3">
+<h3>ExquisiteNetV2<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
+<p>The default integration model for this framework is ExquisiteNetV2. We’re going to go step by step file by file and show you key parts to change so please follow closely. Go into the sota  Directory and click on the ExquisiteNetV2 directory. Inside this directory you will see a README.md file which contains key information for this integration.</p>
+<section id="train-test-data">
+<h4>train-test data<a class="headerlink" href="#train-test-data" title="Link to this heading">¶</a></h4>
+<div class="highlight-markdown notranslate"><div class="highlight"><pre><span></span><span class="gh"># Train Cifar-10</span>
+The best weight has been in the directory <span class="sb">`weight/exp`</span>.
+
+
+If you want to reproduce the result, you can follow the precedure below.
+<span class="k">-</span><span class="w"> </span>__Download the cifar-10 from [official website](
+)__
+<span class="k">1.</span> Download python version and unzip it.
+<span class="k">2.</span> Put <span class="sb">`split.py`</span> into the directory <span class="sb">`cifar-10-python`</span>
+    then type:
+<span class="sb">    ```</span>
+<span class="sb">    python split.py</span>
+<span class="sb">    ```</span>
+    Now you get the cifar10 raw image in the directory <span class="sb">`cifar10`</span>
+
+<span class="k">-</span><span class="w"> </span><span class="gs">__Train from scratch__</span>
+```
+python train.py -da
+</pre></div>
+</div>
 <div class="toctree-wrapper compound">
 </div>
 </section>
@@ -404,6 +444,12 @@ Click the Upload Button at the top of the window, and drag and drop your IMAGE-G
 <li><a class="reference internal" href="#large-language-model-guided-evolution-repository">Large Language Model Guided Evolution Repository</a><ul>
 <li><a class="reference internal" href="#id2">Overview</a><ul>
 <li><a class="reference internal" href="#exquisitenetv2">ExquisiteNetV2</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#llm-ge-codebase-structure">LLM-GE Codebase Structure</a></li>
+<li><a class="reference internal" href="#code-breakdown">Code Breakdown</a></li>
+<li><a class="reference internal" href="#id3">ExquisiteNetV2</a><ul>
+<li><a class="reference internal" href="#train-test-data">train-test data</a></li>
 </ul>
 </li>
 </ul>
