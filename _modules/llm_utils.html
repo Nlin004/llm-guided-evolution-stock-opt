@@ -206,6 +206,8 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../api.html">API</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../generated/run_improved.html">run_improved</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../generated/llm_crossover.html">llm_crossover</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../generated/llm_mutation.html">llm_mutation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../generated/llm_utils.html">llm_utils</a></li>
 </ul>
 </li>
 </ul>
@@ -401,6 +403,29 @@
 <a class="viewcode-back" href="../api_docs/llm_utils.html#llm_utils.submit_mixtral_hf">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">submit_mixtral_hf</span><span class="p">(</span><span class="n">txt2mixtral</span><span class="p">,</span> <span class="n">max_new_tokens</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span> <span class="n">top_p</span><span class="o">=</span><span class="mf">0.15</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> 
                       <span class="n">model_id</span><span class="o">=</span><span class="s2">&quot;mistralai/Mixtral-8x7B-Instruct-v0.1&quot;</span><span class="p">,</span> <span class="n">return_gen</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function submits a model prompt to mixtral through the HuggingFace Inference API</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    txt2mixtral : str</span>
+<span class="sd">        Prompt that will be sent to mixtral</span>
+<span class="sd">    max_new_tokens : int, optional</span>
+<span class="sd">       A setting to tell the LLM the maximum number of tokens to return, by default 1024</span>
+<span class="sd">    top_p : float, optional</span>
+<span class="sd">        _description_, by default 0.15</span>
+<span class="sd">    temperature : float, optional</span>
+<span class="sd">        _description_, by default 0.1</span>
+<span class="sd">    model_id : str, optional</span>
+<span class="sd">       Which mixtral variant to utilize for inference, by default &quot;mistralai/Mixtral-8x7B-Instruct-v0.1&quot;</span>
+<span class="sd">    return_gen : bool, optional</span>
+<span class="sd">        _description_, by default False</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    str</span>
+<span class="sd">        Model&#39;s output from inference</span>
+<span class="sd">    &quot;&quot;&quot;</span>    
     <span class="n">max_new_tokens</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">900</span><span class="p">,</span> <span class="mi">1300</span><span class="p">)</span>
     <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;HF_API_KEY&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">DONT_SCRAPE_ME</span>
     <span class="n">huggingface_hub</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="n">new_session</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -430,6 +455,29 @@
 <a class="viewcode-back" href="../api_docs/llm_utils.html#llm_utils.submit_llama3_hf">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">submit_llama3_hf</span><span class="p">(</span><span class="n">txt2llama</span><span class="p">,</span> <span class="n">max_new_tokens</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span> <span class="n">top_p</span><span class="o">=</span><span class="mf">0.15</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> 
                       <span class="n">model_id</span><span class="o">=</span><span class="s2">&quot;meta-llama/Meta-Llama-3.1-70B-Instruct&quot;</span><span class="p">,</span> <span class="n">return_gen</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function submits a model prompt to Llama3 through the HuggingFace Inference API</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    txt2llama : str</span>
+<span class="sd">        Prompt that will be sent to Llama3</span>
+<span class="sd">    max_new_tokens : int, optional</span>
+<span class="sd">        A setting to tell the LLM the maximum number of tokens to return, by default 1024</span>
+<span class="sd">    top_p : float, optional</span>
+<span class="sd">        _description_, by default 0.15</span>
+<span class="sd">    temperature : float, optional</span>
+<span class="sd">        _description_, by default 0.1</span>
+<span class="sd">    model_id : str, optional</span>
+<span class="sd">        Which Llama3 variant to utilize for inference, by default &quot;meta-llama/Meta-Llama-3.1-70B-Instruct&quot;</span>
+<span class="sd">    return_gen : bool, optional</span>
+<span class="sd">        _description_, by default False</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    str</span>
+<span class="sd">        Model&#39;s output from inference</span>
+<span class="sd">    &quot;&quot;&quot;</span>    
     <span class="n">max_new_tokens</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">900</span><span class="p">,</span> <span class="mi">1300</span><span class="p">)</span>
     <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;HF_API_KEY&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">DONT_SCRAPE_ME</span>
     <span class="n">huggingface_hub</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="n">new_session</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -458,6 +506,19 @@
 <div class="viewcode-block" id="submit_gemini_api">
 <a class="viewcode-back" href="../api_docs/llm_utils.html#llm_utils.submit_gemini_api">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">submit_gemini_api</span><span class="p">(</span><span class="n">txt2gemini</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function submits a model prompt to Gemini through its API</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    txt2gemini : str</span>
+<span class="sd">        Prompt that will be sent to Gemini</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    str</span>
+<span class="sd">        Model&#39;s output from inference</span>
+<span class="sd">    &quot;&quot;&quot;</span>    
     <span class="n">client</span> <span class="o">=</span> <span class="n">genai</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="n">GEMINI_API_KEY</span><span class="p">)</span>
     <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">generate_content</span><span class="p">(</span>
         <span class="n">model</span><span class="o">=</span><span class="s2">&quot;gemini-2.0-flash&quot;</span><span class="p">,</span>
