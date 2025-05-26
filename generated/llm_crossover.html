@@ -200,6 +200,7 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../seed_algorithms.html">Adding Your Seed Algorithms</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../point_cloud.html">Point Cloud Classification Optimization</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Point Cloud Classification Optimization</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
 </ul>
 </li>
@@ -254,10 +255,40 @@
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">augment_network</span></code>(input_filename_x, ...[, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="../api_docs/llm_crossover.html#llm_crossover.augment_network" title="llm_crossover.augment_network"><code class="xref py py-obj docutils literal notranslate"><span class="pre">augment_network</span></code></a>(input_filename_x, ...[, ...])</p></td>
 <td><p>Augment Python Network Script.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_augmented_code</span></code>(output_filename, ...)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">box_print</span></code>(txt[, print_bbox_len, new_line_end])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">clean_code_from_llm</span></code>(code_from_llm)</p></td>
+<td><p>Cleans the code received from LLM.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">extract_note</span></code>(txt)</p></td>
+<td><p>Extracts note from the part if present.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_augmented_code</span></code>(txt2llm, ...[, ...])</p></td>
+<td><p>Generates augmented code using Mixtral.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">llm_code_qc</span></code>(code_from_llm, base_code, ...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">retrieve_base_code</span></code>(idx)</p></td>
+<td><p>Retrieves base code for quality control.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">split_file</span></code>(filename)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str2bool</span></code>(v)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">submit_mixtral</span></code>(txt2mixtral[, ...])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">submit_mixtral_hf</span></code>(txt2mixtral[, ...])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../api_docs/llm_crossover.html#llm_crossover.write_augmented_code" title="llm_crossover.write_augmented_code"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_augmented_code</span></code></a>(output_filename, ...)</p></td>
 <td><p>Writes the augmented code to the output file.</p></td>
 </tr>
 </tbody>
