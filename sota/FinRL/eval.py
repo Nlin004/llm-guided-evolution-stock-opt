@@ -22,6 +22,7 @@ import numpy as np
 import pandas as pd
 from pathlib import Path as p
 import warnings
+import torch
 import multiprocessing as mp
 
 
@@ -32,6 +33,7 @@ from finrl import config_tickers
 # from finrl.meta.preprocessor.yahoodownloader import YahooDownloader
 # from finrl.meta.env_stock_trading.env_stocktrading import StockTradingEnv
 from finrl.agents.stablebaselines3.models import DRLAgent
+from stable_baselines3.common.noise import NormalActionNoise, OrnsteinUhlenbeckActionNoise
 # from finrl.meta.data_processor import DataProcessor
 # from finrl.meta.preprocessor.preprocessors import FeatureEngineer, data_split
 
@@ -160,7 +162,7 @@ if __name__ == "__main__":
         if os.path.exists(data_filepath_pkl):
             print(f"local hard data exists!")
             # df = pd.read_csv(data_filepath)
-            df = pd.read_pickle(data_filepath_pkl)
+            # df = pd.read_pickle(data_filepath_pkl)
         else: 
             print("Error: file not found. Run 'python preprocess.py' first to generate the data, or set USE_CSV to False.")
     else: # 
@@ -173,27 +175,36 @@ if __name__ == "__main__":
 
 
     # FETCH THE TRAINING AND TRADING ENVIRONMENTS, defined from 'python preprocess.py'
-    with open("data/train_df.pkl", "rb") as f:
-        train_df = pickle.load(f)
+    # with open("data/train_df.pkl", "rb") as f:
+    #     train_df = pickle.load(f)
     with open("data/trade_df.pkl", "rb") as f:
         trade_df = pickle.load(f)
     with open("data/env_kwargs.pkl", "rb") as f:
         env_kwargs = pickle.load(f)
-
     # To parallelize the training environment (faster training):
+    # Check if GPU available
+    device = "cpu"
+    if torch.cuda.is_available():
+        torch.set_float32_matmul_precision('high')
+        device = "cuda"
+        torch.cuda.init()
+    print(f"Using device: {device}")
     # === Define callable env factory functions ===
-    def make_train_env():
+    def make_train_env(data_path, env_kwargs_local): # we could do the training data outside the function, but this helps for parallelization
         def _init():
             # Each process loads its own copy from disk
             # import pandas as pd
-            # df = pd.read_pickle('data/train_df.pkl')
-            df = train_df.copy(deep=True)
-            return StockPortfolioEnv(df=df, **env_kwargs)
+            train_df = pd.read_pickle(data_path)
+            return StockPortfolioEnv(df=train_df, **env_kwargs_local)
         return _init
 
     # parallelize the training environment, 3 seems to work, 4 might? but sometimes cuts out. play around with it
-    mp.set_start_method("spawn", force=True)
-    env_train_vec = SubprocVecEnv([make_train_env() for _ in range(3)], start_method='spawn')
+    # mp.set_start_method("spawn", force=True)
+    num_envs = min(3, os.cpu_count())  # Up to 8 envs
+    env_train_vec = SubprocVecEnv(
+        [make_train_env('data/train_df.pkl', env_kwargs) for _ in range(num_envs)],
+        start_method='spawn'
+    )
     # env_train_vec = DummyVecEnv([make_train_env()])  # single-threaded but still vector API
 
     # TRAINING THE MODEL OF CHOICE:
@@ -204,34 +215,27 @@ if __name__ == "__main__":
     # trained_ddpg = agent.train_model(
     #     model=model_ddpg, tb_log_name="ddpg", total_timesteps=50000
     # )
-    ### trained_ddpg.save("sota/FinRL/trained/trained_ddpg.zip")
+    ### trained_ddpg.save("sota/FinRL/trained/seed/trained_ddpg.zip")
 
     # =========== CUSTOM DDPG =================
     agent = CustomDRLAgent(env=env_train_vec) 
-    # CustomDRLAgent inherits from DRLAgent but allows custom models 
-    #(like CustomDDPG, which is what we want to evolve!)
 
-    CUSTOM_DDPG_PARAMS = {"batch_size": 128, "buffer_size": 50000, "learning_rate": 0.001}
-    # {
-    #     "learning_rate": 0.001,
-    #     "buffer_size": 50000,
-    #     "batch_size": 128,
-    #     "gamma": 0.985,
-    #     "tau": 0.005,
-    #     "policy_kwargs": {
-    #         "net_arch": dict(
-    #             pi=[256, 256],  # LLM can evolve these layers
-    #             qf=[256, 256]
-    #         )
-    #     }
-    # }
+    CUSTOM_DDPG_PARAMS = {
+        "verbose": 0, # disable logging in eval stage
+        "device": device,
+        "action_noise": OrnsteinUhlenbeckActionNoise(mean=np.zeros(env_train_vec.action_space.shape[0]), sigma=0.1 * np.ones(env_train_vec.action_space.shape[0])),
+        # "action_noise": NormalActionNoise(mean=np.zeros(env_train_vec.action_space.shape[0]), sigma=0.1 * np.ones(env_train_vec.action_space.shape[0])),
+    }
 
     # Instantiate the agent, given the custom model class and parameters
-    model_ddpg = agent.get_model(model_name="custom_ddpg", model_class=model.CustomDDPG, model_kwargs=CUSTOM_DDPG_PARAMS)
+    model_ddpg = agent.get_model(
+        model_name="custom_ddpg",
+        model_class=model.CustomDDPG,
+        model_kwargs=CUSTOM_DDPG_PARAMS)
 
     # TRAIN MODEL
     trained_ddpg = agent.train_model(
-        model=model_ddpg, tb_log_name="ddpg", total_timesteps=50000
+        model=model_ddpg, tb_log_name=None, total_timesteps=50000
     )
     env_train_vec.close() # close the parallel envs after training is done
 
@@ -240,21 +244,9 @@ if __name__ == "__main__":
     # ================ TRADING / Test =================
     print("[eval.py] Trading Environment + Predictions on Trained DRLAgent...")
 
-    # def make_trade_env():
-    #     def _init():
-    #         return StockPortfolioEnv(df=trade_df, **env_kwargs)
-    #     return _init
-    # e_trade_gym = make_trade_env()()
-    # Create single trading environment
     e_trade_gym = StockPortfolioEnv(df=trade_df, **env_kwargs)
-
     df_daily_return, df_actions = agent.DRL_prediction(model=trained_ddpg, environment=e_trade_gym)
     # df_daily_return, df_actions = vectorized_prediction(trained_ddpg, e_trade_gym) # don't need to parallelize one testing run
-
-    print(f"Daily returns shape: {df_daily_return.shape}")
-
-
-
 
     # === Backtesting ===
     print("[eval.py] Running performance backtest...")
@@ -299,7 +291,7 @@ if __name__ == "__main__":
     # results_text = f"{annual_return:.6f},{annual_volatility:.6f},{sharpe_ratio:.6f},{max_drawdown:.6f},{calmar_ratio:.6f},{sortino_ratio:.6f},{cumulative_return:.6f}"
     results_text = f"{annual_return:.6f},{annual_volatility:.6f},{sharpe_ratio:.6f}"
 
-    # Write to file
+    # Write to results file
     results_dir = p("results")
     results_path = results_dir / f"{gene_id}_results.txt"
     with open(results_path, 'w') as f:
@@ -340,7 +332,29 @@ if __name__ == "__main__":
         print("WARNING: Model significantly outperforms baseline - check for overfitting!")
 
     print("=" * 80 + "\n")
+
+    # ========================== GET WEIGHTS OF EACH STOCK OVER TIME: =========================
+    # def extract_weights(drl_actions_list):
+    #     model_weight_df = {'date':[], 'weights':[]}
+    #     for i in range(len(drl_actions_list)):
+    #         date = drl_actions_list.index[i]
+    #         tic_list = list(drl_actions_list.columns)
+    #         weights_list = drl_actions_list.reset_index()[list(drl_actions_list.columns)].iloc[i].values
+    #         weight_dict = {'tic':[], 'weight':[]}
+    #         for j in range(len(tic_list)):
+    #             weight_dict['tic'] += [tic_list[j]]
+    #             weight_dict['weight'] += [weights_list[j]]
+
+    #         model_weight_df['date'] += [date]
+    #         model_weight_df['weights'] += [pd.DataFrame(weight_dict)]
+
+    #     model_weights = pd.DataFrame(model_weight_df)
+    #     return model_weights
     
+    # ddpg_weights = extract_weights(df_actions)
+    # print("============================ TRADING WEIGHTS FROM DDPG ============================")
+    # ddpg_weights.to_csv(results_dir / "ddpg_weights.csv", index=False)
+    # print(ddpg_weights.head())
 
     
 

@@ -128,6 +128,10 @@ def write_bash_script(input_filename_x=f'{SOTA_ROOT}/{SEED_NETWORK}',
     def fetch_gene(filepath):
         return os.path.basename(filepath).replace(f'{MODEL}_','').replace('.py','')
     global GLOBAL_DATA_ANCESTRY
+    GLOBAL_DATA_ANCESTRY = {}
+    # Add Sota Model:
+    GLOBAL_DATA_ANCESTRY[MODEL] = {'GENES':[MODEL], 'MUTATE_TYPE':["CREATED"]}
+
     QC_CHECK_BOOL = PROB_QC > np.random.uniform()
     # Extract the directory path from the file path
     dir_path = os.path.dirname(output_filename)

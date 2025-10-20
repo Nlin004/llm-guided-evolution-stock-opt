@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=llm_server
-#SBATCH -t 8:00:00
+#SBATCH -t 12:00:00
 #SBATCH --gres=gpu:2
 #SBATCH -G 2
 #SBATCH -C "A100-80GB|H100|H200"
@@ -27,6 +27,6 @@ echo "Starting LLM server on host: $SERVER_HOSTNAME"
 
 source .venv/bin/activate
 
-uvicorn server:app --host $SERVER_HOSTNAME --port 8137 --workers 1
+python -m uvicorn server:app --host $SERVER_HOSTNAME --port 8137 --workers 1
 
 deactivate

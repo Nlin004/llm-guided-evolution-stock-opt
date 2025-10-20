@@ -214,7 +214,7 @@ if __name__ == "__main__":
     dirs = {
         "data": finrl_dir / "data",
         "trained": finrl_dir / "trained",
-        "tensorboard": finrl_dir / "tensorboard_log",
+        # "tensorboard": finrl_dir / "tensorboard_log",
         "results": finrl_dir / "results"
     }
     for d in dirs.values():
@@ -222,21 +222,21 @@ if __name__ == "__main__":
 
     # Check if you've already downloaded the data
     file_path = "data/full_data_clean.pkl"
+    # file_path = "data/train_df.pkl"
+
     if os.path.exists(file_path):
         print(f"local pkl df exists, reading from there.")
         df = pd.read_pickle(file_path)
     else:
         print(f"\n\n ====== Local pkl df does not exist, downloading now. ====== \n\n")
-        df_not_processed = YahooDownloaderLocal(start_date = '2008-01-01',
-                        end_date = '2021-09-02',
-                        ticker_list = config_tickers.DOW_30_TICKER).fetch_data()
+        df_not_processed = YahooDownloaderLocal(
+            start_date = '2008-01-01',
+            end_date = '2021-09-02',
+            ticker_list = config_tickers.DOW_30_TICKER).fetch_data()
 
         df = clean_data(df_not_processed)
-        # df.to_csv('data/train_preprocessed.csv', index=False)
         df.to_pickle("data/full_data_clean.pkl")
         print("=== Saved full_data_clean.pkl ===")
-
-
 
     train = data_split(df, '2009-01-01','2020-06-30')
     trade = data_split(df, '2020-07-01','2021-09-02')

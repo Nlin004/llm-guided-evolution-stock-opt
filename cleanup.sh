@@ -5,3 +5,5 @@ rm -rf sota/ExquisiteNetV2/weight/*
 rm -rf sota/Point-Transformers/models/llmge_models/*
 rm -rf slurm-config/slurm_config.json
 rm -rf sota/Point-Transformers/results/*
+rm -rf sota/FinRL/models/llmge_models/*
+rm -rf sota/FinRL/results/*
