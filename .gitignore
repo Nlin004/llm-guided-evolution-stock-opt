@@ -19,3 +19,4 @@ output/
 **/weights/
 **/results/
 **/llmge_models/
+*.out

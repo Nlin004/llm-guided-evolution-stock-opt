@@ -1,11 +1,19 @@
-### Explanation of changes:
-*   **Renamed function**: Renamed `calculate_distance` to `euclidean_distance`.
-*   **Added type hints**: Added type hints for the function parameters and return value.
-*   **Improved docstring**: Added a docstring that describes what the function does, its parameters, and its return value.
-*   **Example usage in main**: Moved example usage into a `main` function with a guard clause.
+python
+def calculate_total_cost(prices):
+    total = 0
+    for price in prices:
+        if isinstance(price, (int, float)):
+            total += price
+        elif isinstance(price, str):
+            try:
+                total += float(price)
+            except ValueError:
+                pass
+    return total
 
-Here is the refactored code:
-
+# Example usage:
+prices = [10.5, '20', 30, 'abc']
+print(calculate_total_cost(prices))  # Output: 60.5
 
 ```python
 {}

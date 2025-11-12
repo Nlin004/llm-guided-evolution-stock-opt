@@ -1,9 +1,7 @@
-assistant
-
-**Refactored Code with Improvements**
-
-Here's a refactored version of the provided code with improvements in structure, readability, and documentation:
-
+python
+def predict(self, x):
+    #... (rest of the method remains the same)
+    return predictions
 
 ```python
 {}

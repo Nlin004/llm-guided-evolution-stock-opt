@@ -45,6 +45,9 @@ from utils.custom_DRLAgent import CustomDRLAgent
 # from stable_baselines3.common.callbacks import EvalCallback
 from stable_baselines3.common.vec_env import DummyVecEnv, SubprocVecEnv # for parallelizing the Environments!
 import model # import the custom user-defined models.py! This contains the actual architecture we will evolve.
+import modelTD3
+import modelA2C
+import modelPPO
 # ---------------------------------------------------------------------------------
 
 def create_save_dir(save_root):
@@ -184,7 +187,9 @@ if __name__ == "__main__":
     # To parallelize the training environment (faster training):
     # Check if GPU available
     device = "cpu"
+
     if torch.cuda.is_available():
+        _ = torch.tensor([0.], device="cuda")  # Force lazy CUDA init
         torch.set_float32_matmul_precision('high')
         device = "cuda"
         torch.cuda.init()
@@ -200,12 +205,16 @@ if __name__ == "__main__":
 
     # parallelize the training environment, 3 seems to work, 4 might? but sometimes cuts out. play around with it
     # mp.set_start_method("spawn", force=True)
-    num_envs = min(3, os.cpu_count())  # Up to 8 envs
-    env_train_vec = SubprocVecEnv(
-        [make_train_env('data/train_df.pkl', env_kwargs) for _ in range(num_envs)],
-        start_method='spawn'
-    )
-    # env_train_vec = DummyVecEnv([make_train_env()])  # single-threaded but still vector API
+
+    PARALLELIZE = False
+    if PARALLELIZE:
+        num_envs = min(3, os.cpu_count())  # Up to 8 envs
+        env_train_vec = SubprocVecEnv(
+            [make_train_env('data/train_df.pkl', env_kwargs) for _ in range(num_envs)],
+            start_method='spawn'
+        )
+    else:
+        env_train_vec = DummyVecEnv([make_train_env('data/train_df.pkl', env_kwargs)])  # single-threaded but still vector API
 
     # TRAINING THE MODEL OF CHOICE:
     # =========== Default DDPG =================
@@ -218,26 +227,87 @@ if __name__ == "__main__":
     ### trained_ddpg.save("sota/FinRL/trained/seed/trained_ddpg.zip")
 
     # =========== CUSTOM DDPG =================
+
+    # Choose which BASE algorithm to train: "ddpg", "td3", "a2c", "ppo"
+    ALGO = "ddpg"
+
     agent = CustomDRLAgent(env=env_train_vec) 
 
-    CUSTOM_DDPG_PARAMS = {
-        "verbose": 0, # disable logging in eval stage
-        "device": device,
-        "action_noise": OrnsteinUhlenbeckActionNoise(mean=np.zeros(env_train_vec.action_space.shape[0]), sigma=0.1 * np.ones(env_train_vec.action_space.shape[0])),
-        # "action_noise": NormalActionNoise(mean=np.zeros(env_train_vec.action_space.shape[0]), sigma=0.1 * np.ones(env_train_vec.action_space.shape[0])),
+     # Define model registry
+    MODEL_CONFIGS = {
+        "ddpg": {
+            "class": model.CustomDDPG,
+            "params": {
+                # "batch_size": 128,
+                # "buffer_size": 50000,
+                # "learning_rate": 0.001,
+                # "gamma": 0.985,
+                # "tau": 0.005,
+                # "policy_kwargs": {
+                #     "net_arch": dict(pi=[256, 256], qf=[256, 256])
+                # },
+                "action_noise": OrnsteinUhlenbeckActionNoise(mean=np.zeros(env_train_vec.action_space.shape[0]), sigma=0.1 * np.ones(env_train_vec.action_space.shape[0])),
+            },
+        },
+        "td3": {
+            "class": modelTD3.CustomTD3,
+            "params": {
+                "batch_size": 128,
+                "buffer_size": 100000,
+                "learning_rate": 0.001,
+                "policy_delay": 2,
+                "target_policy_noise": 0.2,
+                "target_noise_clip": 0.5,
+                "policy_kwargs": {
+                    "net_arch": dict(pi=[400, 300], qf=[400, 300])
+                },
+            },
+        },
+        "a2c": {
+            "class": modelA2C.CustomA2C,
+            "params": {
+                "learning_rate": 0.001,
+                "n_steps": 10,
+                "policy_kwargs": {
+                    "net_arch": [256, 256]
+                }
+            },
+        },
+        "ppo": {
+            "class": modelPPO.CustomPPO,
+            "params": {
+                "learning_rate": 0.001,
+                "n_steps": 512,
+                "batch_size": 128,
+                "n_epochs": 25,
+                "policy_kwargs": {
+                    "net_arch": [512, 512]
+                },
+            },
+        },
     }
 
-    # Instantiate the agent, given the custom model class and parameters
-    model_ddpg = agent.get_model(
-        model_name="custom_ddpg",
-        model_class=model.CustomDDPG,
-        model_kwargs=CUSTOM_DDPG_PARAMS)
+    # Select model class + params based on ALGO
+    config = MODEL_CONFIGS[ALGO]
+    model_class = config["class"]
+    model_kwargs = config["params"]
 
-    # TRAIN MODEL
-    trained_ddpg = agent.train_model(
-        model=model_ddpg, tb_log_name=None, total_timesteps=50000
-    )
-    env_train_vec.close() # close the parallel envs after training is done
+    # Instantiate and train model
+    model = agent.get_model(model_name=f"custom_{ALGO}", model_class=model_class, model_kwargs=model_kwargs)
+    print(f"Selected model architecture: custom_{ALGO}")
+    trained_model = agent.train_model(model=model, tb_log_name=ALGO, total_timesteps=20000)
+    print("Done training model!")
+
+
+    # CUSTOM_DDPG_PARAMS = {
+    #     "verbose": 0, # disable logging in eval stage
+    #     "device": device,
+    #     "action_noise": OrnsteinUhlenbeckActionNoise(mean=np.zeros(env_train_vec.action_space.shape[0]), sigma=0.1 * np.ones(env_train_vec.action_space.shape[0])),
+    #     # "action_noise": NormalActionNoise(mean=np.zeros(env_train_vec.action_space.shape[0]), sigma=0.1 * np.ones(env_train_vec.action_space.shape[0])),
+    # }
+
+    if PARALLELIZE:
+        env_train_vec.close() # close the parallel envs after training is done
 
 
 
@@ -245,7 +315,7 @@ if __name__ == "__main__":
     print("[eval.py] Trading Environment + Predictions on Trained DRLAgent...")
 
     e_trade_gym = StockPortfolioEnv(df=trade_df, **env_kwargs)
-    df_daily_return, df_actions = agent.DRL_prediction(model=trained_ddpg, environment=e_trade_gym)
+    df_daily_return, df_actions = agent.DRL_prediction(model=trained_model, environment=e_trade_gym)
     # df_daily_return, df_actions = vectorized_prediction(trained_ddpg, e_trade_gym) # don't need to parallelize one testing run
 
     # === Backtesting ===

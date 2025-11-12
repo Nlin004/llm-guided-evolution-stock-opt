@@ -1,7 +1,7 @@
-Here is the rephrased code with improvements in documentation, structure, and readability:
+into a more formal tone? 
 
+Here is the rewritten response:
 
-### Data Loading and Preprocessing
 
 ```python
 {}

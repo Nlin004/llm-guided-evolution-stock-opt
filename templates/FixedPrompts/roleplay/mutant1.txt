@@ -1,10 +1,6 @@
-def predict(self, input_data):
-    # Preprocess data
-    preprocessed_data = self.preprocess(input_data)
-    
-    # Make predictions using the trained model
-    predictions = self.model.predict(preprocessed_data)
-    
+python
+def predict(self, x):
+    #... (rest of the method remains the same)
     return predictions
 
 ```python

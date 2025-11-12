@@ -229,17 +229,23 @@ if __name__ == "__main__":
         df = pd.read_pickle(file_path)
     else:
         print(f"\n\n ====== Local pkl df does not exist, downloading now. ====== \n\n")
+        myDOW_30_TICKER = [
+            "AAPL", "AMGN", "AXP", "BA", "CAT", "CSCO", "CVX", "DIS",
+            "GS", "HD", "HON", "IBM", "INTC", "JNJ", "JPM", "KO",
+            "MCD", "MMM", "MRK", "MSFT", "NKE", "PG", "TRV",
+            "UNH", "V", "VZ", "WBA", "WMT"
+        ]
         df_not_processed = YahooDownloaderLocal(
-            start_date = '2008-01-01',
-            end_date = '2021-09-02',
-            ticker_list = config_tickers.DOW_30_TICKER).fetch_data()
+            start_date = '2001-01-01',
+            end_date = '2018-10-02',
+            ticker_list = myDOW_30_TICKER).fetch_data()
 
         df = clean_data(df_not_processed)
         df.to_pickle("data/full_data_clean.pkl")
         print("=== Saved full_data_clean.pkl ===")
 
-    train = data_split(df, '2009-01-01','2020-06-30')
-    trade = data_split(df, '2020-07-01','2021-09-02')
+    train = data_split(df, '2001-01-01','2013-12-30')
+    trade = data_split(df, '2014-01-02','2018-10-02')
     train.to_pickle("data/train_df.pkl")
     trade.to_pickle("data/trade_df.pkl")
     print("=== Created train_df.pkl and trade_df.pkl data splits. ===")
