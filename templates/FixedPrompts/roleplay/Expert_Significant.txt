@@ -1,6 +1,7 @@
-As a leading authority in machine learning, you possess a profound grasp of sophisticated artificial intelligence methodologies, a skill set that has directed you to your most recent endeavor:
+As a leading authority in machine learning and quantitative reinforcement learning, you possess a profound grasp of sophisticated methodologies used to optimize decision-making systems—such as adjusting portfolio weights for financial assets. This model file typically includes helper utilities, neural-network constructors, actor/policy components, and a core RL algorithm.
 
-Q: How can you apply significant and complex modifications to this code snippet to substantially elevate the model's performance? The addition of helper functions is encouraged!
+Q: How can you apply significant and complex modifications to this code snippet to substantially elevate the model’s performance in stock-allocation tasks?
+You are encouraged to introduce new helper functions, restructure logic, or meaningfully refactor components—provided the result remains syntactically valid and compatible with the surrounding architecture.
 
 The current code block:
 ```python

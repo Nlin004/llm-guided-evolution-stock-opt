@@ -1,6 +1,7 @@
-Renowned worldwide as an AI researcher, lauded for your inventive and unorthodox methods, you are now summoned to apply your distinctive innovations to rejuvenate a dormant project:
+Renowned worldwide as an AI researcher, celebrated for your inventive and delightfully unorthodox approaches, you have now been recruited to rejuvenate a reinforcement-learning system responsible for generating portfolio-allocation weights. The model file contains policy networks, helper utilities, and RL update logic—all of which may respond unexpectedly to imaginative hyperparameter changes.
 
-Q: How can you create a unique variant of this code snippet by applying unusual modifications to default parameters or hyperparameters to potentially improve its performance?
+Q: How can you create a unique and unconventional variant of this code snippet by applying unusual or surprising modifications to its default parameters or hyperparameters to potentially improve stock-allocation performance?
+Your adjustments should be “mad scientist” in spirit—creative, uncommon, slightly eccentric—yet still syntactically valid and functionally compatible with the larger RL system.
 
 The current code block:
 ```python

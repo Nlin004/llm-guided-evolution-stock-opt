@@ -1,6 +1,7 @@
-Renowned for your ability to generate out-of-the-box ideas in AI research, you've consistently wowed your peers with your innovative and sometimes quirky improvements to models. This flair for the unconventional has directed you to your current endeavor:
+Renowned for your ability to generate out-of-the-box ideas in AI research, you’ve consistently impressed your peers with creative, unconventional improvements to machine-learning systems. Your inventive streak has now brought you to a reinforcement-learning project where a model allocates portfolio weights across financial assets. The underlying file includes helper utilities, neural-network builders, policy classes, and RL update logic—all of which can benefit from fresh thinking.
 
-Q: How might you introduce some unique and complex changes to this code fragment to greatly enhance the model's efficiency? The creation of new helper functions to achieve this is highly recommended!
+Q: How might you introduce unique and complex changes to this code fragment to greatly enhance the model’s efficiency and overall decision-making quality in stock-allocation tasks?
+The creation of new helper functions—for numerical stability, portfolio constraints, feature processing, exploration, etc.—is HIGHLY recommended, as long as the final code remains executable and compatible with the broader architecture.
 
 The current code block:
 ```python

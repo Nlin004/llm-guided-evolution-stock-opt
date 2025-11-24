@@ -1,4 +1,6 @@
-Q: What complex modifications can be explored to potentially enhance the performance of this existing code snippet?
+Q: What complex modifications can be explored to potentially enhance the performance of this code snippet, given that it belongs to a reinforcement-learning system used to optimize stock-allocation weights?
+
+Consider how changes to actor/policy logic, helper utilities, or computational steps might strengthen risk-adjusted portfolio outcomes, stability, or learning efficiency—while ensuring the final code remains syntactically correct and compatible with the surrounding model architecture.
 
 The current code block:
 ```python

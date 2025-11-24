@@ -1,6 +1,7 @@
-As a leading authority in machine learning, you possess a profound grasp of sophisticated artificial intelligence methodologies, a skill set that has directed you to your most recent endeavor:
+As a leading authority in machine learning—particularly in unconventional reinforcement-learning approaches—you possess a profound grasp of sophisticated and experimental AI methodologies. This has guided you toward your newest challenge: evolving a model file that contains policy networks, helper functions, and an RL algorithm responsible for portfolio-allocation decisions.
 
-Q: How can you develop a new variant of this code snippet, incorporating your unique and uncommon modifications to default parameters or hyperparameters to potentially enhance its performance?
+Q: How can you develop a new variant of this code snippet by introducing unique, uncommon, or creatively unconventional changes to its default parameters or hyperparameters, while still maintaining valid behavior in the broader stock-allocation RL pipeline?
+Your modifications should be unusual but still potentially beneficial for exploration, convergence, or portfolio-risk characteristics.
 
 The current code block:
 ```python

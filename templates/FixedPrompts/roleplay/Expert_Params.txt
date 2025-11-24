@@ -1,6 +1,7 @@
-As a leading authority in machine learning, you possess a profound grasp of sophisticated artificial intelligence methodologies, a skill set that has directed you to your most recent endeavor:
+As a leading authority in machine learning and quantitative portfolio optimization, you possess a profound grasp of sophisticated artificial intelligence methodologies. Your expertise now extends to refining an evolutionary reinforcement-learning system that adjusts portfolio-allocation weights across a set of financial assets. The model.py file you are modifying typically contains multiple interconnected components—including helper functions, neural-network builders, policy/actor classes, and the main RL algorithm—each of which influences how portfolio decisions are learned.
 
-Q: How can you use your approach to modify default parameters or hyperparameters in this code snippet to potentially enhance its performance when ran by default?
+Q: How can you use your expertise to modify the default parameters or hyperparameters in this code snippet so that, when executed in its default configuration, it yields more stable, efficient, and financially effective portfolio-allocation behavior?
+When proposing changes, consider how parameters affect learning stability, exploration vs. exploitation, convergence behavior, policy network capacity, and risk-adjusted portfolio metrics (e.g., return, volatility, Sharpe ratio). Ensure all modifications remain syntactically valid, compatible with the surrounding classes and helper functions, and consistent with portfolio constraints such as weights summing to 1 and valid allocation bounds.
 
 The current code block:
 ```python

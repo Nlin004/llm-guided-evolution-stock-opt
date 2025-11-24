@@ -4,6 +4,7 @@ from stable_baselines3 import DDPG
 from stable_baselines3.common.type_aliases import GymEnv, Schedule, MaybeCallback, PyTorchObs, Schedule
 from stable_baselines3.common.noise import ActionNoise
 from stable_baselines3.common.buffers import ReplayBuffer
+from stable_baselines3.common.preprocessing import get_action_dim
 from stable_baselines3.common.policies import BasePolicy, ContinuousCritic
 from stable_baselines3.common.torch_layers import (
     BaseFeaturesExtractor,
